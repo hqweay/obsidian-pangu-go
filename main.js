@@ -87,8 +87,8 @@ var formatUtil = {
         // 将链接的格式中文括号“[]（）”改成英文括号“[]()”，去掉增加的空格
         content = content.replace(/\s*\[\s*([^\]]+)\s*\]\s*[（(]\s*([^\s\)]*)\s*[)）]\s*/g, ' [$1]($2) ');
 
-        // 给双链增加空格 add
-        content = content.replace(/\s*\[\[\s*([^\]]+)\s*\]\]\s*/g, ' [[$1]] ');
+        // 给双链增加空格 add，不管 ![[wikilink]]
+        content = content.replace(/\s*[^\!]\[\[\s*([^\]]+)\s*\]\]\s*/g, ' [[$1]] ');
     
         // 删除链接和中文标点的空格 add
         content = content.replace(/([\]\)])\s*([，。、《》？『』「」；：【】｛｝—！＠￥％…（）])/g, '$1$2');
@@ -165,8 +165,10 @@ var formatUtil = {
         //  content = content.replace(/[）)]/g, "）");
         
         //英文
-        content = content.replace(/（\s*(\w)/g, " ($1");
-        content = content.replace(/(\w)\s*）/g, "$1) ");
+        // content = content.replace(/（\s*(\w)/g, " ($1");
+        // content = content.replace(/(\w)\s*）/g, "$1) ");
+        //（i don't know.）;（i don't know）;我的天哪（"but i don't give a fuck"）兄弟;
+        content = content.replace(/（\s*([!@#$%^&*()_+-=\[\]{};':"./<>]*\w.*[!@#$%^&*()_+-=\[\]{};':"./<>]*)\s*）/g, " ($1) ");
 
          content = content.replace(/^(-（)/g, "- （"); // fix - () 这种会被替换为 -（）
 
