@@ -69,6 +69,11 @@ var formatUtil = {
         content = content.replace(/\s([>\)\]\}])\s([>\)\]\}])/g, ' $1$2');
         content = content.replace(/\s([>\)\]\}])\s([>\)\]\}])/g, ' $1$2');
         content = content.replace(/\s([>\)\]\}])\s([>\)\]\}])/g, ' $1$2');
+
+
+        
+
+
         // 去掉 「`$ () $`」, 「`$ [] $`」, 「`$ {} $`」 里面增加的空格
         // 去掉开始 $ 后面增加的空格，结束 $ 前面增加的空格
         // 去掉包裹代码的符号里面增加的空格
@@ -81,12 +86,28 @@ var formatUtil = {
         content = content.replace(/\[\s*\^([^\]\s]*)\s*\]/g, '[^$1]');
         // 将链接的格式中文括号“[]（）”改成英文括号“[]()”，去掉增加的空格
         content = content.replace(/\s*\[\s*([^\]]+)\s*\]\s*[（(]\s*([^\s\)]*)\s*[)）]\s*/g, ' [$1]($2) ');
+
+        // 给双链增加空格 add
+        content = content.replace(/\s*\[\[\s*([^\]]+)\s*\]\]\s*/g, ' [[$1]] ');
+    
+        // 删除链接和中文标点的空格 add
+        content = content.replace(/([\]\)])\s*([，。、《》？『』「」；：【】｛｝—！＠￥％…（）])/g, '$1$2');
+        content = content.replace(/([，。、《》？『』「」；：【】｛｝—！＠￥％…（）])\s*([\[\()])/g, '$1$2');
+        // 删除行首非列表的空格 add
+        content = content.replace(/^\s*([\[\(])/g, '$1');
+
         // 将图片链接的格式中的多余空格“! []()”去掉，变成“![]()”
         content = content.replace(/!\s*\[\s*([^\]]+)\s*\]\s*[（(]\s*([^\s\)]*)\s*[)）]\s*/g, '![$1]($2) ');
         // 将网络地址中“ : // ”符号改成“://”
         content = content.replace(/\s*:\s*\/\s*\/\s*/g, '://');
         // 去掉行末空格
         content = content.replace(/(\S*)\s*$/g, '$1');
+
+
+        content = content.replace(/(^-$)/g, "$1 ");
+
+
+
         // 去掉「123 °」和 「15 %」中的空格
         content = content.replace(/([0-9])\s*([°%])/g, '$1$2');
         // 去掉 2020 - 04 - 20, 08 : 00 : 00 这种日期时间表示的数字内的空格
@@ -113,6 +134,9 @@ var formatUtil = {
     },
     replacePunctuations(content) {
         // `, \ . : ; ? !` 改成 `，、。：；？！`
+
+        //... 替换为中文省略号  add
+        content = content.replace(/[.]{3,}/g, "……");
         // 必须在结尾或者有空格的点才被改成句号
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF])\.($|\s*)/g, '$1。');
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF]),/g, '$1，');
@@ -126,11 +150,31 @@ var formatUtil = {
         content = content.replace(/’/g, '』');
         content = content.replace(/“/g, '「');
         content = content.replace(/”/g, '」');
-        // 括号使用半角标点
+        
+        // 括号使用半角标点——为啥呀
         // 半角括号的两边都有空格就不在这里处理了，放到行中处理
-        content = content.replace(/\s*[（(]\s*/g, ' ( ');
-        content = content.replace(/\s*[）)]\s*/g, ' ) ');
-        // 英文和数字内部的全角标点 `，。；‘’“”：？！＠＃％＆－＝＋｛｝【】｜＼～`改成半角标点
+        //content = content.replace(/\s*[（(]\s*/g, ' ( ');
+        //content = content.replace(/\s*[）)]\s*/g, ' ) ');
+        
+       
+        //start 2022-08  add
+        content = content.replace(/\s*[（(]\s*/g, '（'); // - () 这种会被替换为 -（）
+        content = content.replace(/\s*[）)]\s*/g, '）');
+        
+        //  content = content.replace(/[（(]/g, "（");
+        //  content = content.replace(/[）)]/g, "）");
+        
+        //英文
+        content = content.replace(/（\s*(\w)/g, " ($1");
+        content = content.replace(/(\w)\s*）/g, "$1) ");
+
+         content = content.replace(/^(-（)/g, "- （"); // fix - () 这种会被替换为 -（）
+
+        //  content = content.replace(/\s+（/g, " （");
+        //  content = content.replace(/）\s+/g, "） ");
+
+        //end 2022-08  add
+         // 英文和数字内部的全角标点 `，。；‘’“”：？！＠＃％＆－＝＋｛｝【】｜＼～`改成半角标点
         content = content.replace(/(\w)\s*，\s*(\w)/g, '$1, $2');
         content = content.replace(/(\w)\s*。\s*(\w)/g, '$1. $2');
         content = content.replace(/(\w)\s*；\s*(\w)/g, '$1; $2');
@@ -163,6 +207,7 @@ var formatUtil = {
 
         // 连续三个以上的 `。` 改成 `......`
         content = content.replace(/[。]{3,}/g, '……');
+  
         // 截断连续超过一个的 ？和！ 为一个，「！？」也算一个
         content = content.replace(/([！？]+)\1{1,}/g, '$1');
         // 截断连续超过一个的 。，；：、“”『』〖〗《》 为一个
@@ -196,15 +241,15 @@ var formatUtil = {
           }
           //中文文档内的英文标点替换为中文标点
           line = this.replacePunctuations(line);
+          // 将无编号列表的“* ”改成 “- ”
+          // 将无编号列表的“- ”改成 “- ”
+          line = line.replace(/^(\s*)[-\*]\s+(\S)/, "$1- $2");
           // 删除多余的空格
           line = this.deleteSpaces(line);
           // 插入必要的空格
           line = this.insertSpace(line);
           // 将有编号列表的“1.  ”改成 “1. ”
           line = line.replace(/^(\s*)(\d\.)\s+(\S)/, "$1$2 $3");
-          // 将无编号列表的“* ”改成 “- ”
-          // 将无编号列表的“- ”改成 “- ”
-          line = line.replace(/^(\s*)[-\*]\s+(\S)/, "$1- $2");
 
           return line;
         })
