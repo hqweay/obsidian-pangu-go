@@ -88,8 +88,16 @@ var formatUtil = {
         content = content.replace(/\s*\[\s*([^\]]+)\s*\]\s*[（(]\s*([^\s\)]*)\s*[)）]\s*/g, ' [$1]($2) ');
 
         // 给双链增加空格 add，不管 ![[wikilink]] ==[[wikilink]]==
-        content = content.replace(/\s*[^\!\=，。、]\[\[\s*([^\]]+)\s*\]\]\s*/g, ' [[$1]] ');
-    
+        // [[wikilink]]
+        // 我爱[[wikilink]]
+        // content = content.replace(/\s*[^!=，。、`]\[\[\s*([^\]]+)\s*\]\]\s*/g, ' [[$1]] ');
+        // content = content.replace(/\s*([^!=`-])\s*\[\[\s*([^\]]+)\s*\]\]\s*/g, '$1 [[$2]] ');
+        // content = content.replace(/([，。、《》？『』「」；：【】｛｝—！＠￥％…（）])\[\[\s*(.*)\s*\]\]\s*/g, '$1[[$2]] ');
+        content = content.replace(/\s*\[\[\s*([^\]]+)\s*\]\]\s*/g, ' [[$1]] ');
+        content = content.replace(/\=\=\s\[\[([^\]]+)\]\]\s\=\=/g, "==[[$1]]==");
+        content = content.replace(/\!\s\[\[([^\]]+)\]\]/g, "![[$1]]");
+       
+
         // 删除链接和中文标点的空格 add
         content = content.replace(/([\]\)])\s*([，。、《》？『』「」；：【】｛｝—！＠￥％…（）])/g, '$1$2');
         content = content.replace(/([，。、《》？『』「」；：【】｛｝—！＠￥％…（）])\s*([\[\()])/g, '$1$2');
@@ -106,7 +114,7 @@ var formatUtil = {
         content = content.replace(/(\S*)\s*$/g, '$1');
 
 
-        content = content.replace(/(^-$)/g, "$1 ");
+        content = content.replace(/(^-$)/g, "$1 "); // - outliner 加空格
 
 
 
@@ -117,6 +125,14 @@ var formatUtil = {
         content = content.replace(/([0-9])\s*:\s*([0-9])/g, '$1:$2');
         // 去掉 1 , 234 , 567 这种千分位表示的数字内的空格
         content = content.replace(/([0-9])\s*,\s*([0-9])/g, '$1,$2');
+        
+        //去掉 「，  哈哈。 」这样的空格
+        // content = content.replace(/([^-])\s*([，。、《》？『』「」；∶【】&｛｝！＠￥％…（）])\s*/g, "$1$2");
+        content = content.replace(/\s*([，。、《》？『』「」；∶【】&｛｝！＠￥％…（）])\s*/g, "$1");
+        // - ！ 哈安  --- 保留这样的空格
+        content = content.replace(/-([，。、《》？『』「」；∶【】&｛｝！＠￥％…（）])\s*/g, "- $1");
+        content = content.replace(/-\s*([？&！＠￥％])\s*/g, "- $1 ");
+
         // 全角標點與其他字符之間不加空格
         // 将无序列表的-后面的空格保留
         // 将有序列表的-后面的空格保留
