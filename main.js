@@ -128,10 +128,11 @@ var formatUtil = {
         
         //去掉 「，  哈哈。 」这样的空格
         // content = content.replace(/([^-])\s*([，。、《》？『』「」；∶【】&｛｝！＠￥％…（）])\s*/g, "$1$2");
-        content = content.replace(/\s*([，。、《》？『』「」；∶【】&｛｝！＠￥％…（）])\s*/g, "$1");
+        content = content.replace(/\s*([，。、《》？『』「」；∶【】｛｝！＠￥％…（）])\s*/g, "$1"); // not & like: Tom & Jerry
         // - ！ 哈安  --- 保留这样的空格
         content = content.replace(/-([，。、《》？『』「」；∶【】&｛｝！＠￥％…（）])\s*/g, "- $1");
-        content = content.replace(/-\s*([？&！＠￥％])\s*/g, "- $1 ");
+        content = content.replace(/##([，。、《》？『』「」；∶【】&｛｝！＠￥％…（）])\s*/g, "## $1"); // ##【哈哈】：这样的标题得保留空格
+        content = content.replace(/-\s*([？&！＠￥％])\s*/g, "- $1 ");// - ！ 提醒事项：这样的行内备注 保留空格
 
         // 全角標點與其他字符之間不加空格
         // 将无序列表的-后面的空格保留
