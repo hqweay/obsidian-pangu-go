@@ -14,7 +14,7 @@
 
 > 123「45」678
 
-> ![](https://leay.net/text.png)
+> `![](https://leay.net/text.png)`
 
 > To you,and you alone, 「what matters is the process: the experience of shaping the artwork.」
 
@@ -24,7 +24,7 @@
 
 > 123 "45" 678
 
-> ![pic](https://leay.net/text.png)
+> `![pic](https://leay.net/text.png)`
 
 > To you,and you alone, "what matters is the process: the experience of shaping the artwork."
 
