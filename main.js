@@ -77,7 +77,7 @@ var formatUtil = {
         // 去掉 「`$ () $`」, 「`$ [] $`」, 「`$ {} $`」 里面增加的空格
         // 去掉开始 $ 后面增加的空格，结束 $ 前面增加的空格
         // 去掉包裹代码的符号里面增加的空格
-        // 去掉开始 ` 后面增加的空格，结束 ` 前面增加的空格
+        // 去掉开始 ` 后面增加的空格，结束 ` 前面增加的空格 `hello()`
         content = content.replace(/([`\$])\s*([<\(\[\{])([^\$]*)\s*([`\$])/g, '$1$2$3$4');
         content = content.replace(/([`\$])\s*([^\$]*)([>\)\]\}])\s*([`\$])/g, '$1$2$3$4');
         // 去掉「`) _`」、「`) ^`」增加的空格
@@ -86,6 +86,10 @@ var formatUtil = {
         content = content.replace(/\[\s*\^([^\]\s]*)\s*\]/g, '[^$1]');
         // 将链接的格式中文括号“[]（）”改成英文括号“[]()”，去掉增加的空格
         content = content.replace(/\s*\[\s*([^\]]+)\s*\]\s*[（(]\s*([^\s\)]*)\s*[)）]\s*/g, ' [$1]($2) ');
+
+        // ![](https://img.com/a.jpg)
+
+        content = content.replace(/\!\[\]\(/g, "![img](");
 
         // 给双链增加空格 add，不管 ![[wikilink]] ==[[wikilink]]==
         // [[wikilink]]
@@ -96,7 +100,7 @@ var formatUtil = {
         content = content.replace(/\s*\[\[\s*([^\]]+)\s*\]\]\s*/g, ' [[$1]] ');
         content = content.replace(/\=\=\s\[\[([^\]]+)\]\]\s\=\=/g, "==[[$1]]==");
         content = content.replace(/\!\s\[\[([^\]]+)\]\]/g, "![[$1]]");
-       
+
 
         // 删除链接和中文标点的空格 add
         content = content.replace(/([\]\)])\s*([，。、《》？『』「」；：【】｛｝—！＠￥％…（）])/g, '$1$2');
@@ -169,6 +173,9 @@ var formatUtil = {
         content = content.replace(/’/g, '』');
         content = content.replace(/“/g, '「');
         content = content.replace(/”/g, '」');
+
+        // ![]() -> ![pic]()
+        content = content.replace("![](", "![pic](");
         
         // 括号使用半角标点——为啥呀
         // 半角括号的两边都有空格就不在这里处理了，放到行中处理
@@ -189,6 +196,14 @@ var formatUtil = {
         //（i don't know.）;（i don't know）;我的天哪（"but i don't give a fuck"）兄弟;
         // content = content.replace(/（\s*([!@#$%^&*()_+-=\[\]{};':"./<>]*\w*[!@#$%^&*()_+-=\[\]{};':"./<>]*)\s*）/g, " ($1) ");
         content = content.replace(/（([!@#$%^&*()_+-=\[\]{};':"./<>【】「」《》]*\w.*?[!@#$%^&*()_+-=\[\]{};':"./<>]*)）/g, " ($1) ");
+
+        // `fun   (double)    {}` haha `but`
+        // `fun   ()    {}` haha `but`
+        // `fun()` haha `but`
+        // content = content.replace(/(\w)\s\(/g, "$1(");
+        // content = content.replace(/\)\s(\w)/g, ")$1"); // fix function () -> function()
+        content = content.replace(/`([!\w].*?)\s*\((.*?)\)\s*(.*?)`/g, "`$1($2)$3`"); // fix function () -> function() `!isDown()`
+        content = content.replace(/`([!\w].*?)\s*\（(.*?)\）\s*(.*?)`/g, "`$1($2)$3`"); // fix function () -> function()
 
          content = content.replace(/^(-（)/g, "- （"); // fix - () 这种会被替换为 -（）
 
@@ -222,10 +237,12 @@ var formatUtil = {
         content = content.replace(/(\w)\s*＼\s*(\w)/g, '$1  $2');
         content = content.replace(/(\w)\s*～\s*(\w)/g, '$1~$2');
 
-         content = content.replace(/(\w)\s*「\s*(\w)/g, "$1 '$2");
-         content = content.replace(/(\w)\s*」\s*(\w)/g, "$1' $2");
-         content = content.replace(/(\w)\s*『\s*(\w)/g, '$1 "$2');
-         content = content.replace(/(\w)\s*』\s*(\w)/g, '$1" $2');
+         content = content.replace(/(\w[:;,.!?\'\"]?[:;,.!?\'\"]?)\s*「\s*(\w)/g, '$1 "$2');
+         content = content.replace(/(\w[,.!?]?)\s*」\s*([「]?\w?)/g, '$1" $2');
+         content = content.replace(/(\w)\s*『\s*(\w)/g, "$1 '$2");
+         content = content.replace(/(\w)\s*』\s*(\w)/g, "$1' $2");
+        //  content = content.replace(/(\w)'(\s)?(\w)/g, "$1'$3'");
+         content = content.replace(/(\b\w+')\s(\w*\b)/g, "$1$2");
 
         // 连续三个以上的 `。` 改成 `......`
         content = content.replace(/[。]{3,}/g, '……');
