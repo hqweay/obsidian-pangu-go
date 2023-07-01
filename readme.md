@@ -4,7 +4,7 @@
 
 细节不完善（PS：英文效果尤其不好），大家可以自取调教。= = 有建议可以提 issue.
 
-使用：下载 release 1.0.0 里的 obsidian-pangu-go.zip，解压到 `.obsidian/plugins`，设置里启用！
+使用：下载 release 1.0.0 里的 pangu-go.zip，解压到 `.obsidian/plugins`，设置里启用！
 
 ## 效果
 
