@@ -4,6 +4,8 @@
 
 细节不完善（PS：英文效果尤其不好），大家可以自取调教。= = 有建议可以提 issue.
 
+使用：下载 release 1.0.0 里的 obsidian-pangu-go.zip，解压到 `.obsidian/plugins`，设置里启用！
+
 ## 效果
 
 尚未把格式化规则全列出来，感兴趣的可以试用或看代码……以下是一个简单的例子。
@@ -16,7 +18,7 @@
 
 > `![](https://leay.net/text.png)`
 
-> To you,and you alone, 「what matters is the process: the experience of shaping the artwork.」
+> To you, and you alone, 「what matters is the process: the experience of shaping the artwork.」
 
 格式化后：
 
@@ -26,7 +28,7 @@
 
 > `![pic](https://leay.net/text.png)`
 
-> To you,and you alone, "what matters is the process: the experience of shaping the artwork."
+> To you, and you alone, "what matters is the process: the experience of shaping the artwork."
 
 
 
