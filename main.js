@@ -164,6 +164,7 @@ var formatUtil = {
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF])\.($|\s*)/g, '$1。');
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF]),/g, '$1，');
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF]);/g, '$1；');
+        content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF]):/g, '$1：');
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF])!/g, '$1！');
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF])\?/g, '$1？');
         content = content.replace(/([\u4e00-\u9fa5\u3040-\u30FF])\\/g, '$1、');
@@ -323,7 +324,7 @@ class Pangu extends obsidian.Plugin {
         return __awaiter(this, void 0, void 0, function* () {
             this.addCommand({
                 id: 'pangu-format',
-                name: '为中英文字符间自动加入空格',
+                name: '中文排版喔',
                 callback: () => {
                     var _a;
                     const activeLeafView = this.app.workspace.getActiveViewOfType(obsidian.MarkdownView);
@@ -361,7 +362,7 @@ class PanguSettingTab extends obsidian.PluginSettingTab {
     display() {
         let { containerEl } = this;
         containerEl.empty();
-        containerEl.createEl('h2', { text: 'Pangu 使用说明' });
+        containerEl.createEl('h2', { text: 'Pangu Go 使用说明' });
         new obsidian.Setting(containerEl)
             .setName('')
             .setDesc('默认快捷键为:Mac - Command + Shift + S，Windows -  Shift + Ctrl + S。当然，您可以到「设置 - 快捷键」里进行更改。');
